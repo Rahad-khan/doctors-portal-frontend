@@ -5,11 +5,11 @@ import Header from './component/shared/Header';
 
 function App() {
   return (
-    <div className="lg:px-12">
-      <Header/>
+    <div className="max-w-screen-xl mx-auto">
+      <Header />
       <Routes>
-        <Route path='/' element={<Home/>}></Route>
-        <Route path='/home' element={<Home/>}></Route>
+        <Route path="/" element={<Home />}></Route>
+        <Route path="/home" element={<Home />}></Route>
       </Routes>
     </div>
   );

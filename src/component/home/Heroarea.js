@@ -12,7 +12,7 @@ const Heroarea = () => {
       <div className="hero-content gap-8 flex-col lg:flex-row-reverse">
         <img
           src={chair}
-          className="max-w-lg rounded-lg shadow-2xl"
+          className="md:max-w-lg rounded-lg shadow-2xl"
           alt="doctors chair"
         />
         <div>
