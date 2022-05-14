@@ -5,7 +5,7 @@ import Header from './component/shared/Header';
 
 function App() {
   return (
-    <div className="max-w-screen-xl mx-auto">
+    <div className="max-w-max mx-auto">
       <Header />
       <Routes>
         <Route path="/" element={<Home />}></Route>
