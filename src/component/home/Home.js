@@ -1,5 +1,6 @@
 import React from "react";
 import Footer from "../shared/Footer";
+import ContactHome from "./ContactHome";
 import Heroarea from "./Heroarea";
 import Info from "./Info";
 import MakeAppointment from "./MakeAppointment";
@@ -16,6 +17,7 @@ const Home = () => {
       </section>
       <MakeAppointment />
       <Testimonial/>
+      <ContactHome/>
       <Footer />
     </div>
   );

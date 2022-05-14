@@ -39,12 +39,12 @@ const Testimonial = () => {
         </div>
         <div className='grid md:grid-cols-2 lg:grid-cols-3'>
           {reviews.map((review) => (
-            <div key={review._id} class="card max-w-md shadow-xl">
-              <div class="card-body">
+            <div key={review._id} className="card max-w-md shadow-xl">
+              <div className="card-body">
                 <p>{review.review}</p>
                 <div className='flex justify-center items-center mt-3'>
-                  <div class="avatar">
-                    <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                  <div className="avatar">
+                    <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                       <img src={review.image} />
                     </div>
                   </div>

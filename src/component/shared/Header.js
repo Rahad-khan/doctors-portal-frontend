@@ -50,7 +50,7 @@ const Header = () => {
                 {navItem}
               </ul>
             </div>
-            <Link to="/" className="btn btn-ghost normal-case text-xl">
+            <Link to="/" className="btn btn-ghost normal-case text-xl md:text-3xl">
               Doctors Portal
             </Link>
           </div>
