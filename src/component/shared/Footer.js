@@ -54,7 +54,7 @@ const Footer = () => {
           </a>
         </div>
       </div>
-      <div className="my-6 text-center">
+      <div className="my-10 text-center">
         <p>
           Copyright &copy; {currentYear} - All right reserved by Rahad Khan
         </p>
