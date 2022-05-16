@@ -23,11 +23,11 @@ const ContactHome = () => {
             <input
               type="email"
               placeholder="Email Address"
-              class="input w-full "
+              className="input w-full "
             />
-            <input type="text" placeholder="Subject" class="input w-full " />
+            <input type="text" placeholder="Subject" className="input w-full " />
             <textarea
-              class="textarea w-full"
+              className="textarea w-full"
               rows="5"
               placeholder="Your Message"
             ></textarea>

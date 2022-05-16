@@ -1,34 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { format } from "date-fns";
+import axios from 'axios';
+import Button from '../shared/Button';
+import Service from './Service';
+import Modal from './Modal';
 
 
 
 const AvailableServices = ({date}) => {
-    const services = [
-      "Teeth Orthodontics",
-      "Cosmetic Dentistry",
-      "Teeth Cleaning",
-      "Cavity Protection",
-      "Pediatric Dental",
-      "Oral Surgery"
-    ];
+  const [services, setServices] = useState([]); 
+  const [treatment, setTreatment] = useState(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      const {data} =await axios.get('services.json');
+      setServices(data)
+    }
+    getData();
+  }, []);
     return (
       <section className="my-16 px-12">
-        <div className="text-center text-xl">
-          <h2 className=" text-secondary">
+        <div>
+          <h2 className="text-center text-xl text-secondary">
             Available Services on {format(date, "PP")}
           </h2>
-          <h2 className="text-slate-400">Please select a service.</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 my-6">
+            {services.map((service) => (
+              <Service
+                key={service._id}
+                service={service}
+                setTreatment={setTreatment}
+              ></Service>
+            ))}
+          </div>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {services.map((service, index) => (
-            <div key={index} class="card w-96 bg-base-100 shadow-md">
-              <div class="card-body">
-                <h2 class="text-lg text-secondary text-center">{service}</h2>
-              </div>
-            </div>
-          ))}
-        </div>
+        {treatment && (
+          <Modal
+            date={date}
+            treatment={treatment}
+            setTreatment={setTreatment}
+          ></Modal>
+        )}
       </section>
     );
 };
