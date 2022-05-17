@@ -1,68 +1,72 @@
-import { async } from "@firebase/util";
-import React, { useRef } from "react";
-import {
-  useSendPasswordResetEmail,
-  useSignInWithEmailAndPassword,
-  useSignInWithGoogle,
-} from "react-firebase-hooks/auth";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
 import auth from "../../firebase.init";
+import { useCreateUserWithEmailAndPassword , useSignInWithGoogle, useUpdateProfile } from "react-firebase-hooks/auth";
 import Spinner from "../shared/Spinner";
 
-const Login = () => {
-  const [signInWithEmailAndPassword, user, loading, error] =
-    useSignInWithEmailAndPassword(auth);
-
-  const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
-
-  const [sendPasswordResetEmail, sending, PassError] =
-    useSendPasswordResetEmail(auth);
+const Register = () => {
+  const [createUserWithEmailAndPassword, user, loading, error] =
+    useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
+    const [updateProfile, updating, upProError] = useUpdateProfile(auth);
+    const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-    getValues
   } = useForm();
 
   const onSubmit = async (data) => {
-    const { email, password } = data;
-    await signInWithEmailAndPassword(email, password);
+    const { email, password, name } = data;
+    await createUserWithEmailAndPassword(email, password);
+    await updateProfile({displayName:name})
     reset();
-  };
-  const handleResetPassword = async () => {
-    const email = getValues("email");
-    if (email) {
-      await sendPasswordResetEmail(email);
-      toast.success("Password Reset Email Sent Successfully");
-      reset();
-    } else {
-      toast.info("Please Provide Email First");
-    }
   };
   let errorMessage;
 
-  if (error || PassError) {
-    errorMessage = <p className="text-red-500">{error?.message}</p>;
+  if (error || upProError ) {
+      errorMessage = <p className="text-red-500">{error?.message || upProError?.message}</p>
   }
-  if (loading || gLoading || sending) {
-    errorMessage = "";
-    return <Spinner></Spinner>;
+  if(loading || updating || gLoading) {
+      errorMessage = '';
+      return <Spinner></Spinner>
   }
 
   if (user || gUser) {
-    console.log(user, gUser);
+      console.log(user, gUser);
   }
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="card w-96 shadow-xl">
         <div className="card-body items-center text-center">
-          <h2 className="card-title">Login</h2>
+          <h2 className="card-title">Sign Up</h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Name</span>
+              </label>
+              <input
+                {...register("name", {
+                  required: {
+                    value: true,
+                    message: "Name is Required",
+                  },
+                })}
+                type="text"
+                placeholder="Your Name"
+                className="input input-bordered w-full"
+              />
+              <label className="label">
+                {errors.name?.type === "required" && (
+                  <span className="label-text-alt text-red-500">
+                    {errors.name.message}
+                  </span>
+                )}
+              </label>
+            </div>
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text">Email</span>
@@ -114,7 +118,7 @@ const Login = () => {
                 placeholder="Password"
                 className="input input-bordered w-full"
               />
-              <label className="label p-0">
+              <label className="label">
                 {errors.password?.type === "required" && (
                   <span className="label-text-alt text-red-500">
                     {errors.password.message}
@@ -127,37 +131,24 @@ const Login = () => {
                 )}
               </label>
             </div>
-            <div className="flex justify-start items-center mb-3">
-              <small>
-                <button onClick={handleResetPassword} type="button">
-                  Forgot Password ?
-                </button>
-              </small>
-            </div>
-
             {errorMessage}
-            <input type="submit" className="btn w-full" value="Login" />
+            <input type="submit" className="btn w-full" value="Sign Up" />
           </form>
           <p>
             <small>
-              New to Doctors Portal?{" "}
-              <Link to="/register" className="text-secondary">
-                Create new account
+              Already have an account?  
+              <Link to="/login" className="ml-1 text-secondary">
+                Login
               </Link>
             </small>
           </p>
           <div className="divider m-0 mb-1">OR</div>
           {gError && <p className="text-red-500">{gError?.message}</p>}
-          <button
-            onClick={() => signInWithGoogle()}
-            className="btn btn-outline w-full"
-          >
-            Continue With Google
-          </button>
+          <button onClick={() => signInWithGoogle()} className="btn btn-outline w-full">Continue With Google</button>
         </div>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default Register;

@@ -1,7 +1,10 @@
-import React from 'react';
+import React from "react";
 import { format } from "date-fns";
+import { useAuthState } from "react-firebase-hooks/auth";
+import auth from "../../firebase.init";
 
 const Modal = ({ treatment, date, setTreatment }) => {
+  const [user] = useAuthState(auth);
   const { name, slots } = treatment;
   const handleOrderTreatment = (e) => {
     e.preventDefault();
@@ -20,7 +23,7 @@ const Modal = ({ treatment, date, setTreatment }) => {
         <div className="modal-box relative">
           <label
             htmlFor="booking-modal"
-            class="btn btn-sm btn-circle absolute right-2 top-2"
+            className="btn btn-sm btn-circle absolute right-2 top-2"
           >
             ✕
           </label>
@@ -32,35 +35,37 @@ const Modal = ({ treatment, date, setTreatment }) => {
               value={format(date, "PP")}
               disabled
               placeholder="Type here"
-              class="input w-full input-bordered"
+              className="input w-full input-bordered"
             />
-            <select name="time" class="select select-bordered w-full">
-              {slots.map((slot) => (
-                <option>{slot}</option>
+            <select name="time" className="select select-bordered w-full">
+              {slots.map((slot, index) => (
+                <option key={index}>{slot}</option>
               ))}
             </select>
             <input
               required
               type="text"
               name="name"
-              placeholder="Your Name"
-              class="input w-full input-bordered"
+              disabled
+              value={user?.displayName || " "}
+              className="input w-full input-bordered"
+            />
+            <input
+              required
+              type="email"
+              name="email"
+              disabled
+              value={user?.email || " "}
+              className="input w-full input-bordered"
             />
             <input
               required
               type="tel"
               name="tel"
               placeholder="Phone Number"
-              class="input w-full input-bordered"
+              className="input w-full input-bordered"
             />
-            <input
-              required
-              type="email"
-              name="email"
-              placeholder="Email"
-              class="input w-full input-bordered"
-            />
-            <input type="submit" value="Submit" class="btn w-full" />
+            <input type="submit" value="Submit" className="btn w-full" />
           </form>
         </div>
       </div>
