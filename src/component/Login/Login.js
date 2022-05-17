@@ -1,12 +1,11 @@
-import { async } from "@firebase/util";
-import React, { useRef } from "react";
+import React, { useEffect } from "react";
 import {
   useSendPasswordResetEmail,
   useSignInWithEmailAndPassword,
   useSignInWithGoogle,
 } from "react-firebase-hooks/auth";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import auth from "../../firebase.init";
 import Spinner from "../shared/Spinner";
@@ -20,13 +19,19 @@ const Login = () => {
   const [sendPasswordResetEmail, sending, PassError] =
     useSendPasswordResetEmail(auth);
 
+    let navigate = useNavigate();
+    let location = useLocation();
+    let from = location.state?.from?.pathname || "/";
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-    getValues
+    getValues,
   } = useForm();
+
+  
 
   const onSubmit = async (data) => {
     const { email, password } = data;
@@ -43,6 +48,14 @@ const Login = () => {
       toast.info("Please Provide Email First");
     }
   };
+
+  useEffect(() => {
+    if (user || gUser) {
+      navigate(from, { replace: true });
+    }
+  }, [from, navigate, user, gUser]);
+
+
   let errorMessage;
 
   if (error || PassError) {
@@ -52,10 +65,10 @@ const Login = () => {
     errorMessage = "";
     return <Spinner></Spinner>;
   }
+  
+ 
 
-  if (user || gUser) {
-    console.log(user, gUser);
-  }
+  
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="card w-96 shadow-xl">
