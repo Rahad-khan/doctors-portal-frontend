@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import auth from "../../firebase.init";
+import useToken from "../../hooks/useToken";
 import Spinner from "../shared/Spinner";
 
 const Login = () => {
@@ -18,6 +19,7 @@ const Login = () => {
 
   const [sendPasswordResetEmail, sending, PassError] =
     useSendPasswordResetEmail(auth);
+    const [token] = useToken(user || gUser)
 
     let navigate = useNavigate();
     let location = useLocation();
@@ -50,10 +52,10 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (user || gUser) {
+    if (token) {
       navigate(from, { replace: true });
     }
-  }, [from, navigate, user, gUser]);
+  }, [from, navigate, token]);
 
 
   let errorMessage;

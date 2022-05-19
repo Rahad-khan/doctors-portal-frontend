@@ -23,16 +23,24 @@ const Header = () => {
         <li>
           <Link to="contact">Contact Us</Link>
         </li>
+        {user && (
+          <>
+            <li>
+              <Link to="dashboard">Dashboard</Link>
+            </li>
+          </>
+        )}
         {user ? (
           <li>
-            <button onClick={() => signOut(auth)}>Sign Out</button>
+            <button onClick={() => {
+              localStorage.removeItem("accessToken");
+              signOut(auth)}}>Sign Out</button>
           </li>
         ) : (
           <li>
             <Link to="login">Login</Link>
           </li>
         )}
-        
       </>
     );
     return (
@@ -63,12 +71,37 @@ const Header = () => {
                 {navItem}
               </ul>
             </div>
-            <Link to="/" className="btn btn-ghost normal-case text-xl md:text-3xl">
+            <Link
+              to="/"
+              className="btn btn-ghost normal-case text-xl md:text-3xl"
+            >
               Doctors Portal
             </Link>
           </div>
           <div className="navbar-end hidden lg:flex">
             <ul className="menu menu-horizontal p-0">{navItem}</ul>
+          </div>
+          <div className="navbar-end lg:hidden">
+            <label
+              htmlFor="dashboard-drawer"
+              tabIndex="1"
+              className="btn btn-ghost lg:hidden"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h8m-8 6h16"
+                />
+              </svg>
+            </label>
           </div>
         </div>
       </header>

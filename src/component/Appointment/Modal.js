@@ -2,18 +2,36 @@ import React from "react";
 import { format } from "date-fns";
 import { useAuthState } from "react-firebase-hooks/auth";
 import auth from "../../firebase.init";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-const Modal = ({ treatment, date, setTreatment }) => {
+const Modal = ({ treatment, date, setTreatment, refetch }) => {
   const [user] = useAuthState(auth);
-  const { name, slots } = treatment;
-  const handleOrderTreatment = (e) => {
+  const { _id, name, slots } = treatment;
+  const handleOrderTreatment = async (e) => {
     e.preventDefault();
-    const day = e.target.day.value;
-    const time = e.target.time.value;
-    const name = e.target.name.value;
-    const email = e.target.email.value;
-    const tel = e.target.tel.value;
-    console.log(day, time, name, email, tel);
+    const date = e.target.date.value;
+    const slot = e.target.slot.value;
+    const bookingData = {
+      treatmentId: _id,
+      treatment: name,
+      date,
+      slot,
+      phone: e.target.tel.value,
+      userId: user.email,
+      patientName: user.displayName,
+    };
+    const url = "http://localhost:5000/booking";
+    const { data } = await axios.post(url, bookingData);
+    console.log(data);
+    if (data?.success) {
+      toast.success(`Appointment is sate on ${date} at ${slot}`);
+    } else {
+      toast.error(
+        `Already Have An Appointment on ${data?.booking?.date} at ${data?.booking?.slot}`
+      );
+    };
+    refetch()
     setTreatment(null);
   };
   return (
@@ -31,13 +49,13 @@ const Modal = ({ treatment, date, setTreatment }) => {
           <form className="mt-6 space-y-4" onSubmit={handleOrderTreatment}>
             <input
               type="text"
-              name="day"
+              name="date"
               value={format(date, "PP")}
               disabled
               placeholder="Type here"
               className="input w-full input-bordered"
             />
-            <select name="time" className="select select-bordered w-full">
+            <select name="slot" className="select select-bordered w-full">
               {slots.map((slot, index) => (
                 <option key={index}>{slot}</option>
               ))}
@@ -59,7 +77,6 @@ const Modal = ({ treatment, date, setTreatment }) => {
               className="input w-full input-bordered"
             />
             <input
-              required
               type="tel"
               name="tel"
               placeholder="Phone Number"

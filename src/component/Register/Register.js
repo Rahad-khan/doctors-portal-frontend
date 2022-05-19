@@ -4,12 +4,14 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import auth from "../../firebase.init";
 import { useCreateUserWithEmailAndPassword , useSignInWithGoogle, useUpdateProfile } from "react-firebase-hooks/auth";
 import Spinner from "../shared/Spinner";
+import useToken from "../../hooks/useToken";
 
 const Register = () => {
   const [createUserWithEmailAndPassword, user, loading, error] =
     useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
     const [updateProfile, updating, upProError] = useUpdateProfile(auth);
     const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
+    const [token] = useToken(user || gUser);
 
     let navigate = useNavigate();
     let location = useLocation();
@@ -30,10 +32,10 @@ const Register = () => {
   };
 
   useEffect(() => {
-    if (user || gUser) {
+    if (token) {
       navigate(from, { replace: true });
     }
-  }, [from, navigate, user, gUser]);
+  }, [from, navigate,token]);
 
   let errorMessage;
 
